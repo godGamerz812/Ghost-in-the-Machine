@@ -24,3 +24,19 @@ jobs:
         run: python -m compileall -q app.py story_archive.py tests
       - name: Run tests
         run: pytest -q
+      - name: Smoke test Streamlit startup
+        shell: bash
+        run: |
+          streamlit run app.py --server.headless true --server.port 8501 > /tmp/streamlit.log 2>&1 &
+          app_pid=$!
+          trap 'kill "$app_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --silent --fail http://127.0.0.1:8501/_stcore/health; then
+              echo "Streamlit health check passed."
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/streamlit.log
+          echo "Streamlit did not become healthy in time."
+          exit 1
