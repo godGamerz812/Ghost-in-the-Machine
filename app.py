@@ -93,12 +93,14 @@ with create_tab:
     if audio_file is not None:
         st.audio(audio_file)
 
+    transcript_key = f"story_transcript_{st.session_state.get('transcript_reset', 0)}"
+
     if st.button("Transcribe with local model", type="secondary", disabled=audio_file is None):
         try:
             with st.spinner("Loading the local model and transcribing…"):
                 transcript = transcribe_locally(audio_file.getvalue(), audio_file.name or "recording.wav", model_size)
             if transcript:
-                st.session_state["story_transcript"] = transcript
+                st.session_state[transcript_key] = transcript
                 st.success("Transcription completed. Review it before saving.")
             else:
                 st.warning("No speech was detected. You can type the transcript below.")
@@ -107,7 +109,7 @@ with create_tab:
 
     transcript_text = st.text_area(
         "Transcript / story text",
-        key="story_transcript",
+        key=transcript_key,
         height=220,
         placeholder="Write a story here, or transcribe an audio recording with the local model.",
         help="Review names, dates, and details before saving. Automatic transcription can make mistakes.",
@@ -122,7 +124,7 @@ with create_tab:
                 story = create_story(title, transcript_text, story_day, tag_text)
                 add_story(ARCHIVE_PATH, story)
                 st.success("Story saved to the local JSON archive.")
-                st.session_state["story_transcript"] = ""
+                st.session_state["transcript_reset"] = st.session_state.get("transcript_reset", 0) + 1
                 st.rerun()
             except (OSError, ValueError) as exc:
                 st.error(f"Story could not be saved: {exc}")
