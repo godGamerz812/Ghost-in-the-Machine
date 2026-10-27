@@ -6,7 +6,7 @@ A local-first, open-source AI companion for preserving family stories and memori
 
 ## Project status
 
-This is a prototype intended to demonstrate the Week 4 “Ghost in the Machine” challenge theme: useful open-source AI at the core, with an open-weight model that can run locally. The application defaults to local processing. Actual speech recognition requires a compatible local Whisper model and the optional dependencies listed below.
+This is a prototype intended to demonstrate the Week 4 “Ghost in the Machine” challenge theme: useful open-source AI at the core, with an open-weight model that can run locally. The application uses faster-whisper with an open-weight Whisper model. The first transcription may download model weights to the machine running the app; after they are cached, audio is processed locally without a hosted AI API.
 
 ## Features
 
@@ -31,13 +31,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-For speech recognition, install the optional local transcription dependencies:
-
-```bash
-pip install -r requirements-ai.txt
-```
-
-The first transcription may download the selected open-weight model to the local machine. Choose a model size appropriate for your hardware. If the local model dependencies are unavailable, you can still create, search, and export text stories manually.
+The first transcription may need an internet connection to download model weights. Choose a model size appropriate for your hardware. If model setup is unavailable, you can still create, search, and export text stories manually.
 
 ## Privacy and safety
 
