@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+stories.json
+stories.json.tmp
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.flac
+*.webm
+.DS_Store
