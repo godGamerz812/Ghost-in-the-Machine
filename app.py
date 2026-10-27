@@ -68,9 +68,28 @@ create_tab, archive_tab, about_tab = st.tabs(["Capture a story", "Story archive"
 
 with create_tab:
     st.markdown("### Start with a memory")
-    title = st.text_input("Story title", placeholder="e.g. Grandmother's first journey")
+    transcript_key = f"story_transcript_{st.session_state.get('transcript_reset', 0)}"
+    if st.button("Load a fictional sample story"):
+        st.session_state["story_title"] = "A summer afternoon at the old mango tree"
+        st.session_state["story_tags"] = "family, childhood, sample"
+        st.session_state[transcript_key] = (
+            "Fictional demo story: Every summer afternoon, the cousins met beneath "
+            "the old mango tree. Their grandmother told them how the village looked "
+            "before the new road arrived. They remembered her stories, the smell of "
+            "mangoes, and the sound of rain on the tin roof."
+        )
+        st.rerun()
+    title = st.text_input(
+        "Story title",
+        placeholder="e.g. Grandmother's first journey",
+        key="story_title",
+    )
     story_day = st.date_input("When did it happen?", value=date.today())
-    tag_text = st.text_input("Tags (comma-separated)", placeholder="family, childhood, recipes")
+    tag_text = st.text_input(
+        "Tags (comma-separated)",
+        placeholder="family, childhood, recipes",
+        key="story_tags",
+    )
 
     recorder = getattr(st, "audio_input", None)
     audio_file = None
@@ -92,8 +111,6 @@ with create_tab:
     )
     if audio_file is not None:
         st.audio(audio_file)
-
-    transcript_key = f"story_transcript_{st.session_state.get('transcript_reset', 0)}"
 
     if st.button("Transcribe with local model", type="secondary", disabled=audio_file is None):
         try:
